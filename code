@@ -1,0 +1,59 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract CredentialVerification {
+
+    struct Credential {
+        uint256 id;
+        string studentName;
+        string courseName;
+        uint256 issueDate;
+        bool isValid;
+    }
+
+    address public institution;
+    uint256 public nextCredentialId = 1;
+    mapping(uint256 => Credential) public credentials;
+
+    event CredentialIssued(uint256 credentialId, string studentName, string courseName, uint256 issueDate);
+    event CredentialRevoked(uint256 credentialId);
+
+    modifier onlyInstitution() {
+        require(msg.sender == institution, "Only the institution can perform this action");
+        _;
+    }
+
+    constructor() {
+        institution = msg.sender;
+    }
+
+    function issueCredential(string memory _studentName, string memory _courseName) public onlyInstitution {
+        uint256 credentialId = nextCredentialId;
+        credentials[credentialId] = Credential({
+            id: credentialId,
+            studentName: _studentName,
+            courseName: _courseName,
+            issueDate: block.timestamp,
+            isValid: true
+        });
+
+        emit CredentialIssued(credentialId, _studentName, _courseName, block.timestamp);
+
+        nextCredentialId++;
+    }
+
+    function revokeCredential(uint256 _credentialId) public onlyInstitution {
+        require(credentials[_credentialId].isValid, "Credential is already revoked or does not exist");
+        credentials[_credentialId].isValid = false;
+        emit CredentialRevoked(_credentialId);
+    }
+
+    function verifyCredential(uint256 _credentialId) public view returns (bool) {
+        return credentials[_credentialId].isValid;
+    }
+
+    function getCredentialDetails(uint256 _credentialId) public view returns (string memory studentName, string memory courseName, uint256 issueDate, bool isValid) {
+        Credential memory credential = credentials[_credentialId];
+        return (credential.studentName, credential.courseName, credential.issueDate, credential.isValid);
+    }
+}
