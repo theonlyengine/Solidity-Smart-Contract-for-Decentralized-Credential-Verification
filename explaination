@@ -1,0 +1,14 @@
+Struct Definition: A Credential struct holds the details of each credential issued.
+Institution Address: The address of the institution issuing the credentials is stored in institution.
+Mapping: credentials is a mapping from credential IDs to Credential structs.
+Events: CredentialIssued and CredentialRevoked events are emitted when a credential is issued or revoked.
+Modifiers: onlyInstitution ensures that only the institution can issue or revoke credentials.
+Functions:
+issueCredential: Allows the institution to issue a new credential.
+revokeCredential: Allows the institution to revoke an existing credential.
+verifyCredential: Allows anyone to verify the validity of a credential.
+getCredentialDetails: Provides details of a specific credential.
+Deployment and Usage
+Deploy the contract to the Ethereum blockchain using a tool like Remix, Truffle, or Hardhat.
+The institution can issue and revoke credentials using the respective functions.
+Anyone can verify the credentials using the verifyCredential function or fetch details using the getCredentialDetails function.
